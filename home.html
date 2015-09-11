@@ -1,5 +1,7 @@
-<!DOCTYPE html>
-{% autoescape true %}
+{% extends "base.html" %}
+
+{% block content %}
+
 <div id="content">
     {% for note in notes %}
       {% if note.author %}
@@ -47,4 +49,4 @@
 
   </body>
 </html>
-{% endautoescape %}
+{% endblock %}
