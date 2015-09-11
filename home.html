@@ -5,11 +5,11 @@
 <div id="content">
     {% for note in notes %}
       {% if note.author %}
-        <b>{{ note.author.email }}
+        {{ note.author.email }}
           {% if user and user.user_id() == note.author.identity %}
             (You)
           {% endif %}
-        </b> wrote:
+         wrote:
       {% else %}
        An anonymous person wrote:
       {% endif %}

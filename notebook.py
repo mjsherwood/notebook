@@ -49,7 +49,7 @@ class MainPage(webapp2.RequestHandler):
         notebook_name = self.request.get('notebook_name',
                                           DEFAULT_NOTEBOOK_NAME)
         notes_query = Note.query(
-            ancestor=notebook_key(notebook_name)).order(-Note.date)
+            ancestor=notebook_key(notebook_name)).order(Note.unit)
         notes = notes_query.fetch(10)
 
         user = users.get_current_user()
