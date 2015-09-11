@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 {% autoescape true %}
-<html>
-  <body>
+<div id="content">
     {% for note in notes %}
       {% if note.author %}
         <b>{{ note.author.email }}
@@ -12,11 +11,28 @@
       {% else %}
        An anonymous person wrote:
       {% endif %}
-      <blockquote>{{ note.content }}</blockquote>
+      <div id="concept">
+        <div id="unit"><blockquote>Unit {{ note.unit }}</blockquote></div>
+        <div id="title"><blockquote>Title: {{ note.title }}</blockquote></div>
+        <div id="description"><blockquote><b>Description: </b>{{ note.description }}</blockquote></div>
+      </div>
     {% endfor %}
 
+
     <form action="/sign?notebook_name={{ notebook_name }}" method="post">
-      <div><textarea name="content" rows="3" cols="60"></textarea></div>
+      <b>Unit Numer:</b>
+      <div><select name="unit">
+             <option value="1">Unit 1</option>
+             <option value="2">Unit 2</option>
+             <option value="3">Unit 3</option>
+             <option value="4">Unit 4</option>
+             <option value="5">Unit 5</option>
+          </select>
+      </div>
+      <br>Title:</b>
+      <div><textarea name="title" rows="1" cols="60"></textarea></div>
+      <b>Description:</b>
+      <div><textarea name="description" rows="3" cols="60"></textarea></div>
       <div><input type="submit" value="Leave Note"></div>
     </form>
 
