@@ -1,0 +1,50 @@
+html,
+body {
+	margin:0;
+	padding:0;
+	height:100%;
+	font-family: Helvetica;
+}
+#wrapper {
+	min-height:100%;
+	position:relative;
+}
+#header {
+	text-align: center;
+	background-color: #294860;
+	color: white;
+	padding:5px;
+}
+#content {
+	padding-bottom:50px; /* Height of the footer element */
+	padding-left:15px;
+}
+#footer {
+	text-align: center;
+	background-color: #294860;
+	color: white;
+	width:100%;
+	height:30px;
+	padding: 10px;
+	position:absolute;
+	bottom:0;
+	left:0;
+}
+#concept {
+	border: 5px solid;
+	border-color: #294860;
+	border-radius: 1em;
+	padding: 3px;
+	margin-bottom: 5px;
+}
+#unit {
+	font-weight: bold;
+	font-size: 15px;
+}
+#title {
+	font-size: 20px;
+	font-weight: bold;
+}
+#description {
+	font-size: 15px;
+}

@@ -5,6 +5,8 @@ api_version: 1
 threadsafe: true
 
 handlers:
+- url: /assets
+  static_dir: assets
 - url: /.*
   script: notebook.app
 

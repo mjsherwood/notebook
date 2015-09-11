@@ -37,7 +37,9 @@ class Author(ndb.Model):
 class Note(ndb.Model):
     """A main model for representing an individual Notebook entry."""
     author = ndb.StructuredProperty(Author)
-    content = ndb.StringProperty(indexed=False)
+    unit = ndb.StringProperty(indexed=True)
+    title = ndb.StringProperty(indexed=False)
+    description = ndb.StringProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
 
 
@@ -85,7 +87,9 @@ class Notebook(webapp2.RequestHandler):
                     identity=users.get_current_user().user_id(),
                     email=users.get_current_user().email())
 
-        note.content = self.request.get('content')
+        note.description = self.request.get('description')
+        note.title = self.request.get('title')
+        note.unit = self.request.get('unit')
         note.put()
 
         query_params = {'notebook_name': notebook_name}
