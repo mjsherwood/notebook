@@ -15,7 +15,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 DEFAULT_NOTEBOOK_NAME = 'intro_notes'
 
-# We set a parent key on the 'Greetings' to ensure that they are all
+# We set a parent key on the 'Notes' to ensure that they are all
 # in the same entity group. Queries across the single entity group
 # will be consistent.  However, the write rate should be limited to
 # ~1/second.
@@ -34,7 +34,7 @@ class Author(ndb.Model):
     email = ndb.StringProperty(indexed=False)
 
 
-class Greeting(ndb.Model):
+class Note(ndb.Model):
     """A main model for representing an individual Notebook entry."""
     author = ndb.StructuredProperty(Author)
     content = ndb.StringProperty(indexed=False)
@@ -46,9 +46,9 @@ class MainPage(webapp2.RequestHandler):
     def get(self):
         notebook_name = self.request.get('notebook_name',
                                           DEFAULT_NOTEBOOK_NAME)
-        greetings_query = Greeting.query(
-            ancestor=notebook_key(notebook_name)).order(-Greeting.date)
-        greetings = greetings_query.fetch(10)
+        notes_query = Note.query(
+            ancestor=notebook_key(notebook_name)).order(-Note.date)
+        notes = notes_query.fetch(10)
 
         user = users.get_current_user()
         if user:
@@ -60,7 +60,7 @@ class MainPage(webapp2.RequestHandler):
 
         template_values = {
             'user': user,
-            'greetings': greetings,
+            'notes': notes,
             'notebook_name': urllib.quote_plus(notebook_name),
             'url': url,
             'url_linktext': url_linktext,
@@ -71,22 +71,22 @@ class MainPage(webapp2.RequestHandler):
 
 class Notebook(webapp2.RequestHandler):
     def post(self):
-        # We set the same parent key on the 'Greeting' to ensure each
-        # Greeting is in the same entity group. Queries across the
+        # We set the same parent key on the 'Note' to ensure each
+        # Note is in the same entity group. Queries across the
         # single entity group will be consistent. However, the write
         # rate to a single entity group should be limited to
         # ~1/second.
         notebook_name = self.request.get('notebook_name',
                                           DEFAULT_NOTEBOOK_NAME)
-        greeting = Greeting(parent=notebook_key(notebook_name))
+        note = Note(parent=notebook_key(notebook_name))
 
         if users.get_current_user():
-            greeting.author = Author(
+            note.author = Author(
                     identity=users.get_current_user().user_id(),
                     email=users.get_current_user().email())
 
-        greeting.content = self.request.get('content')
-        greeting.put()
+        note.content = self.request.get('content')
+        note.put()
 
         query_params = {'notebook_name': notebook_name}
         self.redirect('/?' + urllib.urlencode(query_params))

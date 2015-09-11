@@ -2,17 +2,17 @@
 {% autoescape true %}
 <html>
   <body>
-    {% for greeting in greetings %}
-      {% if greeting.author %}
-        <b>{{ greeting.author.email }}
-          {% if user and user.user_id() == greeting.author.identity %}
+    {% for note in notes %}
+      {% if note.author %}
+        <b>{{ note.author.email }}
+          {% if user and user.user_id() == note.author.identity %}
             (You)
           {% endif %}
         </b> wrote:
       {% else %}
        An anonymous person wrote:
       {% endif %}
-      <blockquote>{{ greeting.content }}</blockquote>
+      <blockquote>{{ note.content }}</blockquote>
     {% endfor %}
 
     <form action="/sign?notebook_name={{ notebook_name }}" method="post">
