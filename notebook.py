@@ -1,25 +1,17 @@
-import cgi
+import os
 import urllib
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
 
+import jinja2
 import webapp2
 
-MAIN_PAGE_FOOTER_TEMPLATE = """\
-    <form action="/sign?%s" method="post">
-      <div><textarea name="content" rows="3" cols="60"></textarea></div>
-      <div><input type="submit" value="Leave Note"></div>
-    </form>
-    <hr>
-    <form>Notebook name:
-      <input value="%s" name="notebook_name">
-      <input type="submit" value="switch">
-    </form>
-    <a href="%s">%s</a>
-  </body>
-</html>
-"""
+
+JINJA_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
 
 DEFAULT_NOTEBOOK_NAME = 'intro_notes'
 
@@ -50,33 +42,15 @@ class Greeting(ndb.Model):
 
 
 class MainPage(webapp2.RequestHandler):
+
     def get(self):
-        self.response.write('<html><body>')
         notebook_name = self.request.get('notebook_name',
                                           DEFAULT_NOTEBOOK_NAME)
-
-        # Ancestor Queries, as shown here, are strongly consistent
-        # with the High Replication Datastore. Queries that span
-        # entity groups are eventually consistent. If we omitted the
-        # ancestor from this query there would be a slight chance that
-        # Greeting that had just been written would not show up in a
-        # query.
         greetings_query = Greeting.query(
             ancestor=notebook_key(notebook_name)).order(-Greeting.date)
         greetings = greetings_query.fetch(10)
 
         user = users.get_current_user()
-        for greeting in greetings:
-            if greeting.author:
-                author = greeting.author.email
-                if user and user.user_id() == greeting.author.identity:
-                    author += ' (You)'
-                self.response.write('<b>%s</b> wrote:' % author)
-            else:
-                self.response.write('An anonymous person wrote:')
-            self.response.write('<blockquote>%s</blockquote>' %
-                                cgi.escape(greeting.content))
-
         if user:
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
@@ -84,12 +58,16 @@ class MainPage(webapp2.RequestHandler):
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
 
-        # Write the submission form and the footer of the page
-        sign_query_params = urllib.urlencode({'notebook_name':
-                                              notebook_name})
-        self.response.write(MAIN_PAGE_FOOTER_TEMPLATE %
-                            (sign_query_params, cgi.escape(notebook_name),
-                             url, url_linktext))
+        template_values = {
+            'user': user,
+            'greetings': greetings,
+            'notebook_name': urllib.quote_plus(notebook_name),
+            'url': url,
+            'url_linktext': url_linktext,
+        }
+
+        template = JINJA_ENVIRONMENT.get_template('home.html')
+        self.response.write(template.render(template_values))
 
 class Notebook(webapp2.RequestHandler):
     def post(self):
