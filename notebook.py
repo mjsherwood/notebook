@@ -93,9 +93,20 @@ class Notebook(webapp2.RequestHandler):
         note.put()
 
         query_params = {'notebook_name': notebook_name}
-        self.redirect('/?' + urllib.urlencode(query_params))
+        if not(note.unit and note.title and note.description):
+            self.redirect('/error')
+        else:
+            self.redirect('/?' + urllib.urlencode(query_params))
+
+
+class Error(webapp2.RequestHandler):
+    def get(self):
+        self.response.out.write('''<b>Some of the data you entered is missing or
+                                not valid. To go back to the home page and try
+                                again click <a href='/'>here.</a></b>''')
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/sign', Notebook),
+    ('/error', Error),
 ], debug=True)
