@@ -2,5 +2,4 @@ indexes:
 - kind: Note
   ancestor: yes
   properties:
-  - name: date
-    direction: desc
+  - name: unit
