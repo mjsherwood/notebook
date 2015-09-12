@@ -51,7 +51,7 @@ class MainPage(webapp2.RequestHandler):
                                           DEFAULT_NOTEBOOK_NAME)
         notes_query = Note.query(
             ancestor=notebook_key(notebook_name)).order(Note.unit)
-        notes = notes_query.fetch(10)
+        notes = notes_query.fetch(30)
 
         user = users.get_current_user()
         if user:
