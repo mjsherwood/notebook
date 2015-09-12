@@ -49,3 +49,7 @@ body {
 #description {
 	font-size: 15px;
 }
+#error {
+	font-size: 18px;
+	padding-left: 15px;
+}

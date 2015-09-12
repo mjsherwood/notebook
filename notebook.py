@@ -93,6 +93,7 @@ class Notebook(webapp2.RequestHandler):
         note.put()
 
         query_params = {'notebook_name': notebook_name}
+        # error handling for a blank note entered
         if not(note.unit and note.title and note.description):
             self.redirect('/error')
         else:
@@ -101,9 +102,9 @@ class Notebook(webapp2.RequestHandler):
 
 class Error(webapp2.RequestHandler):
     def get(self):
-        self.response.out.write('''<b>Some of the data you entered is missing or
-                                not valid. To go back to the home page and try
-                                again click <a href='/'>here.</a></b>''')
+        template = JINJA_ENVIRONMENT.get_template('error.html')
+        template_values = {}
+        self.response.write(template.render(template_values))
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
