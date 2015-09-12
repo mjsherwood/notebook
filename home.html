@@ -3,7 +3,9 @@
 {% block content %}
 
 <div id="content">
+
     {% for note in notes %}
+    <div id="concept">
       {% if note.author %}
         {{ note.author.email }}
           {% if user and user.user_id() == note.author.identity %}
@@ -13,7 +15,6 @@
       {% else %}
        An anonymous person wrote:
       {% endif %}
-      <div id="concept">
         <div id="unit"><blockquote>Unit {{ note.unit }}</blockquote></div>
         <div id="title"><blockquote>Title: {{ note.title }}</blockquote></div>
         <div id="description"><blockquote><b>Description: </b>{{ note.description }}</blockquote></div>
@@ -32,9 +33,9 @@
           </select>
       </div>
       <br>Title:</b>
-      <div><textarea name="title" rows="1" cols="60"></textarea></div>
+      <div><textarea name="title" rows="1" cols="120"></textarea></div>
       <b>Description:</b>
-      <div><textarea name="description" rows="3" cols="60"></textarea></div>
+      <div><textarea name="description" rows="3" cols="120"></textarea></div>
       <div><input type="submit" value="Leave Note"></div>
     </form>
 
@@ -47,6 +48,5 @@
 
     <a href="{{ url|safe }}">{{ url_linktext }}</a>
 
-  </body>
-</html>
+
 {% endblock %}

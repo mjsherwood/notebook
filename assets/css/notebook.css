@@ -18,6 +18,7 @@ body {
 #content {
 	padding-bottom:50px; /* Height of the footer element */
 	padding-left:15px;
+	padding-right: 15px;
 }
 #footer {
 	text-align: center;
