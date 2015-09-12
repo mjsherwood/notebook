@@ -35,6 +35,7 @@ class Author(ndb.Model):
 
 
 class Note(ndb.Model):
+#This is where we define the variables we want to input into the database
     """A main model for representing an individual Notebook entry."""
     author = ndb.StructuredProperty(Author)
     unit = ndb.StringProperty(indexed=True)
@@ -44,7 +45,7 @@ class Note(ndb.Model):
 
 
 class MainPage(webapp2.RequestHandler):
-
+#This is the class for the homepage. it retrieves the data to be rendered
     def get(self):
         notebook_name = self.request.get('notebook_name',
                                           DEFAULT_NOTEBOOK_NAME)
@@ -72,6 +73,7 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
 class Notebook(webapp2.RequestHandler):
+#Here we are sending all the data from our form to the database.
     def post(self):
         # We set the same parent key on the 'Note' to ensure each
         # Note is in the same entity group. Queries across the
@@ -101,6 +103,8 @@ class Notebook(webapp2.RequestHandler):
 
 
 class Error(webapp2.RequestHandler):
+#We use this class to define our error page for
+#incorrectly entered or missing data
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('error.html')
         template_values = {}
