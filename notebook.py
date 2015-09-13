@@ -49,9 +49,9 @@ class MainPage(webapp2.RequestHandler):
     def get(self):
         notebook_name = self.request.get('notebook_name',
                                           DEFAULT_NOTEBOOK_NAME)
-        notes_query = Note.query(
+        num_notes = Note.query(
             ancestor=notebook_key(notebook_name)).order(Note.unit)
-        notes = notes_query.fetch(30)
+        notes = num_notes.fetch(30)
 
         user = users.get_current_user()
         if user:
@@ -92,13 +92,11 @@ class Notebook(webapp2.RequestHandler):
         note.description = self.request.get('description')
         note.title = self.request.get('title')
         note.unit = self.request.get('unit')
-        note.put()
-
         query_params = {'notebook_name': notebook_name}
-        # error handling for a blank note entered
         if not(note.unit and note.title and note.description):
             self.redirect('/error')
         else:
+            note.put()
             self.redirect('/?' + urllib.urlencode(query_params))
 
 
