@@ -49,9 +49,11 @@ class MainPage(webapp2.RequestHandler):
     def get(self):
         notebook_name = self.request.get('notebook_name',
                                           DEFAULT_NOTEBOOK_NAME)
-        num_notes = Note.query(
+#This is the number of notes that will be shown on the notebook.
+        number_of_notes = 30
+        notes_query = Note.query(
             ancestor=notebook_key(notebook_name)).order(Note.unit)
-        notes = num_notes.fetch(30)
+        notes = notes_query.fetch(number_of_notes)
 
         user = users.get_current_user()
         if user:
@@ -89,9 +91,9 @@ class Notebook(webapp2.RequestHandler):
                     identity=users.get_current_user().user_id(),
                     email=users.get_current_user().email())
 
-        note.description = self.request.get('description')
-        note.title = self.request.get('title')
-        note.unit = self.request.get('unit')
+        note.description = self.request.get('description').strip()
+        note.title = self.request.get('title').strip()
+        note.unit = self.request.get('unit').strip()
         query_params = {'notebook_name': notebook_name}
         if not(note.unit and note.title and note.description):
             self.redirect('/error')
