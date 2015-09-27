@@ -21,6 +21,10 @@
       </div>
     {% endfor %}
 
+    {% if img_url %}
+    <img src="{{img_url}}"
+    {% endif %}
+
 
     <form action="/sign?notebook_name={{ notebook_name }}" method="post">
       <b>Unit Numer:</b>
