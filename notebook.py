@@ -31,15 +31,16 @@ def notebook_key(notebook_name=DEFAULT_NOTEBOOK_NAME):
 
 
 GMAPS_URL = "http://maps.googleapis.com/maps/api/staticmap?size=380x263&sensor=false&"
+
 def gmaps_img(points):
     markers = '&'.join('markers=%s,%s' % (p.lat, p.lon) for p in points)
     return GMAPS_URL + markers
 
 IP_URL = "http://api.hostip.info/?ip="
+
 def get_coords(ip):
-    url = IP_URL + "4.4.2.2"
+    url = IP_URL + ip
     content = None
-    content = urllib2.urlopen(url).read()
     try:
         content = urllib2.urlopen(url).read()
     except urllib2.URLError:
@@ -52,7 +53,6 @@ def get_coords(ip):
         if coords and coords[0].childNodes[0].nodeValue:
             lon, lat = coords[0].childNodes[0].nodeValue.split(',')
             return ndb.GeoPt(lat, lon)
-
 
 
 class Author(ndb.Model):
@@ -70,6 +70,7 @@ class Note(ndb.Model):
     description = ndb.StringProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
     coords = ndb.GeoPtProperty()
+    ip = ndb.StringProperty()
 
 
 class MainPage(webapp2.RequestHandler):
@@ -82,6 +83,19 @@ class MainPage(webapp2.RequestHandler):
         notes_query = Note.query(
             ancestor=notebook_key(notebook_name)).order(Note.unit)
         notes = notes_query.fetch(number_of_notes)
+
+        #notes = list(notes)
+
+        #points = filter(None, (n.coords for n in notes))
+        points = []
+        for note in notes:
+            if note.coords:
+                points.append(note.coords)
+        self.response.write(points)
+
+        img_url = gmaps_img(points)
+        self.response.write(img_url)
+
         #Get user info of the person who entered the note if logged in.
         user = users.get_current_user()
         if user:
@@ -91,13 +105,15 @@ class MainPage(webapp2.RequestHandler):
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
 
+        #notes = list(notes)
+
         #Find which notes have coordinates.
-        points = filter(None, (note.coords for note in notes))
+        #points = filter(None, (note.coords for note in notes))
 
         #If we have any note coordinatess, makes an image url
-        img_url = None
-        if points:
-            img_url = gmaps_img(points)
+        #img_url = None
+        #if points:
+            #img_url = gmaps_img(points)
 
         template_values = {
             'user': user,
@@ -132,15 +148,17 @@ class Notebook(webapp2.RequestHandler):
         note.title = self.request.get('title').strip()
         note.unit = self.request.get('unit').strip()
         query_params = {'notebook_name': notebook_name}
+        #Here I enter the ip address and gps coordinates in db
+        note.ip = os.environ["REMOTE_ADDR"]
+        coords = get_coords(note.ip)
+        if coords:
+            note.coords = coords
 
         if not(note.unit and note.title and note.description):
             self.redirect('/error')
         else:
-            note.coords = get_coords(self.request.remote_addr)
-
             note.put()
             self.redirect('/?' + urllib.urlencode(query_params))
-
 
 class Error(webapp2.RequestHandler):
 #We use this class to define our error page for
