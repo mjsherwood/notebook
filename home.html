@@ -20,6 +20,34 @@
         <div id="description"><blockquote><b>Description: </b>{{ note.description }}</blockquote></div>
       </div>
     {% endfor %}
+    <div id="resources">Resources:</div>
+    <div id="resource">
+      <div id="title">JSON Validator</div>
+      <div id="link"><a href="http://jsonlint.com/">jsonling.com</a></div>
+      <div id="description">This is a site that allows you to validate JSON. It
+                            is very useful when wanting to make sure that your
+                            JSON is correct. By validating your JSON you can
+                            make sure that you are doing things in a correct
+                            manner. It is always good to validate your code so
+                            that others will be able to use the API you created
+                            or so that you can properly use the API of others.
+                            This site is a good reference for anyone wanting to
+                            use JSON.</div>
+    </div>
+    <div id="resource">
+      <div id="title">API Resource</div>
+      <div id="link"><a href="http://www.programmableweb.com/apis/directory">programmableweb.com</a></div>
+      <div id="description">This is a site that shows some of the most common
+                            and useful api´s on the web. When you want to program
+                            a certain function and find a site that has an api
+                            that suits your needs, you can go to this site. Here
+                            you can find links to API´s all across the web and
+                            a description of what the API offers and the protocol
+                            it uses. One example is the twitter api that lets you
+                            get information about tweets in real time. Another is
+                            the Twilio API which lets you set up all kinds of
+                            telephony based applications.</div>
+    </div>
 
     {% if img_url %}
     <div id="map"><img src="{{img_url}}"></div>

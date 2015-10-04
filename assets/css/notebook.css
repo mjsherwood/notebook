@@ -38,6 +38,17 @@ body {
 	padding: 3px;
 	margin-bottom: 5px;
 }
+#resources {
+	font-size: 20px;
+	font-weight: bold;
+}
+#resource {
+	border: 5px solid;
+	border-color: #294860;
+	border-radius: 1em;
+	padding: 3px;
+	margin-bottom: 5px;
+}
 #unit {
 	font-weight: bold;
 	font-size: 15px;
@@ -49,7 +60,13 @@ body {
 #description {
 	font-size: 15px;
 }
+#link {
+	font-size: 15px;
+}
 #error {
 	font-size: 18px;
 	padding-left: 15px;
+}
+#map {
+	margin-bottom: 5px;
 }
