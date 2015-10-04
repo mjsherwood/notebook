@@ -29,15 +29,18 @@ def notebook_key(notebook_name=DEFAULT_NOTEBOOK_NAME):
     """
     return ndb.Key('Notebook', notebook_name)
 
-
+#This is the base url that uses google maps api to create a map.
 GMAPS_URL = "http://maps.googleapis.com/maps/api/staticmap?size=380x263&sensor=false&"
 
+#this function appends the latitude and longitude onto the preceding url.
 def gmaps_img(points):
     markers = '&'.join('markers=%s,%s' % (p.lat, p.lon) for p in points)
     return GMAPS_URL + markers
 
+#This url is an api that pulls longitude and latitude from based on ip
 IP_URL = "http://api.hostip.info/?ip="
 
+#This function uses the ip to get the latitude and longitude via api
 def get_coords(ip):
     url = IP_URL + ip
     content = None
@@ -84,17 +87,13 @@ class MainPage(webapp2.RequestHandler):
             ancestor=notebook_key(notebook_name)).order(Note.unit)
         notes = notes_query.fetch(number_of_notes)
 
-        #notes = list(notes)
+        notes = list(notes)
+        #creating points to be used in the gmaps_function
+        points = filter(None, (n.coords for n in notes))
 
-        #points = filter(None, (n.coords for n in notes))
-        points = []
-        for note in notes:
-            if note.coords:
-                points.append(note.coords)
-        self.response.write(points)
-
-        img_url = gmaps_img(points)
-        self.response.write(img_url)
+        img_url = None
+        if points:
+            img_url = gmaps_img(points)
 
         #Get user info of the person who entered the note if logged in.
         user = users.get_current_user()
@@ -104,16 +103,6 @@ class MainPage(webapp2.RequestHandler):
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
-
-        #notes = list(notes)
-
-        #Find which notes have coordinates.
-        #points = filter(None, (note.coords for note in notes))
-
-        #If we have any note coordinatess, makes an image url
-        #img_url = None
-        #if points:
-            #img_url = gmaps_img(points)
 
         template_values = {
             'user': user,
